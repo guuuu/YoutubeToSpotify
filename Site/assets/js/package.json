@@ -1,0 +1,22 @@
+{
+  "name": "js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/guuuu/YoutubeToSpotify.git"
+  },
+  "author": "Gustavo Nascimento",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/guuuu/YoutubeToSpotify/issues"
+  },
+  "homepage": "https://github.com/guuuu/YoutubeToSpotify#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
