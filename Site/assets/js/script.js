@@ -5,10 +5,10 @@ const path = require("path");
 const fs = require("fs");
 const html_path = path.join(__dirname, "..\\..");
 const default_folder = path.join(__dirname, "..\\..\\");
-
+const default_file = path.join(__dirname, "..", "..", "index.html")
 app.use(express.static(default_folder))
 
-app.use('/:page', function(req, res) {
+app.get('/:page', function(req, res) {
     let req_file = path.join(html_path, req.originalUrl + ".html");
 
     try {
