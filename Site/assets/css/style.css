@@ -2,8 +2,8 @@
 
 * {
     font-family: 'Rubik', sans-serif;
-    background-color: #38192F;
-    color: #FFFFFF;
+    background-color: #E8E8E8;
+    color: #DE354C;
 }
 
 ::-webkit-scrollbar {
@@ -11,7 +11,7 @@
 }
 
 ::-webkit-scrollbar-track {
-    background: #291021;
+    background: #E1E1E1;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -19,7 +19,7 @@
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #FFFFFF;
+    background: #CCCCCC;
 }
 
 .header {
@@ -34,7 +34,7 @@
 }
 
 .bt_login, .merge {
-    border: 2px solid #FFFFFF;
+    border: 2px solid #3c1874;
     box-shadow: none;
     margin-top: 5%;
     padding: 10px 100px;
@@ -46,8 +46,8 @@
 }
 
 .bt_login:hover, .merge:hover {
-    background-color: #FFFFFF;
-    color: #38192F;
+    background-color: #D2D2D2;
+    color: #DE354C;
     transition: .5s;
 }
 
@@ -57,7 +57,7 @@
 
 .pl_content {
     margin-top: 5%;
-    border: 1px solid #FFFFFF;
+    border: 1px solid #3c1874;
     text-align: center;
     max-height: 450px;
     overflow-y: scroll;
@@ -69,7 +69,7 @@
 }
 
 .dropdown {
-    border: 2px solid white;
+    border: 2px solid #3c1874;
     padding: 5px;
     width: 60%;
     margin: 5%;
@@ -77,20 +77,13 @@
 }
 
 .dropdown:focus {
-    border: 2px solid white;
+    border: 2px solid #3c1874;
     box-shadow: none;
 }
 
 .pl_content .dropdown {
     display: block;
     margin: 0 auto;
-}
-
-.content_header {
-    text-align: center;
-    position: fixed;
-    border: 2px solid lime;
-    margin-left: 3%;
 }
 
 .song {
