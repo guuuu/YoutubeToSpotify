@@ -24,15 +24,17 @@
                 <div class="title">
                     <h2>Login to your google account</h2>
                 </div>
-                <button class="bt_login" id="gl">Login</button>
+                <form method="GET" action="/gl">
+                    <button type="submit" class="bt_login" id="gl">Login</button>
+                </form>
                 <div class="pl_content">
                     <label class="logged">Logged in as: </label>
-                    <label class="yt_user">xxxxxxxxx@xxxxxxxx.com</label><br />
-                    <label class="subtitle" id="yt_pl_amount">Available playlists: x</label><br />
+                    <label class="yt_user"><%=google_user%></label><br />
+                    <label class="subtitle" id="yt_pl_amount">Available playlists: <%=yt_pl%></label><br />
                     <select class="dropdown" id="yt_pl">
                         <option>...</option>
                     </select>
-                    <label class="subtitle" id="yt_songs_amount">Available songs: x</label><br />
+                    <label class="subtitle" id="yt_songs_amount">Available songs: <%=yt_songs%></label><br />
                     <div class="songs">
                         <ul id="yt_songs">
                             <li class="song"></li>
@@ -83,15 +85,17 @@
                 <div class="title">
                     <h2>Login to your spotify account</h2>
                 </div>
-                <button class="bt_login" id="sl">Login</button>
+                <form method="GET" action="/sl">
+                    <button type="submit" class="bt_login" id="sl">Login</button>
+                </form>
                 <div class="pl_content">
                     <label class="logged">Logged in as: </label>
-                    <label class="yt_user">xxxxxxxxx@xxxxxxxx.com</label><br />
-                    <label class="subtitle" id="sp_pl_amount">Available playlists: x</label><br />
+                    <label class="yt_user"><%=spotify_user%></label><br />
+                    <label class="subtitle" id="sp_pl_amount">Available playlists: <%=sp_pl%></label><br />
                     <select class="dropdown" id="sp_pl">
                         <option>...</option>
                     </select>
-                    <label class="subtitle" id="sp_songs_amount">Available songs: x</label><br />
+                    <label class="subtitle" id="sp_songs_amount">Available songs: <%=sp_songs%></label><br />
                     <div class="songs">
                         <ul id="sp_songs">
                             <li class="song"></li>

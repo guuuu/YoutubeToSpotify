@@ -1,6 +1,6 @@
-$("#gl").click(() => {
-    $.ajax({
-        type: "GET",
-        url: "/teste"
-      });
-});
+// $("#gl").click(() => {
+//     $.ajax({
+//         type: "GET",
+//         url: "/gl"
+//       });
+// });
