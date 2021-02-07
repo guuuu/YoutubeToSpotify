@@ -1,5 +1,6 @@
 const { google } = require("googleapis");
 
+
 const googleConfig = {
   clientId: process.env.google_id,
   clientSecret: process.env.google_secret,
@@ -33,24 +34,22 @@ function urlGoogle() {
   return url;
 }
 
-async function get_email(code) {
-  const auth = createConnection();
-  const data = await auth.getToken(code);
-  const tokens = data.tokens;
-  auth.setCredentials(tokens);
-  
-  let oauth2 = google.oauth2({
-      auth: auth,
-      version: 'v2'
-  });
-  
-  console.log(oauth2.userinfo.v2.me.context.google.gmail);
+function access_tokens(code){
+  var postDataUrl = 'https://www.googleapis.com/oauth2/v3/token?' +
+  'code=' + code +
+  '&client_id=' + googleConfig.clientId +
+  '&client_secret=' + googleConfig.clientSecret +
+  '&redirect_uri=' + "http://127.0.0.1:8080/gl_success" +
+  '&grant_type=' + "authorization_code"
 
-  oauth2.userinfo.get((err, res) => {
-    if (err) return err;
-    else return res.data.email;
-  });
+  var options = {
+      uri: postDataUrl,
+      method: 'POST'
+  };
+
+  return options
 }
 
 module.exports.urlGoogle = urlGoogle;
-module.exports.get_email = get_email;
+module.exports.tokens = access_tokens;
+//module.exports.get_email = get_email;
