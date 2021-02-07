@@ -23,7 +23,7 @@ app.get("/", (req, res) => {
         sp_pl: sp_pl,
         yt_songs: yt_songs,
         sp_songs: sp_songs
-     });
+    });
 
     res.status(200);
     res.end();
@@ -34,6 +34,9 @@ app.get("/gl", (req, res) => {
 });
 
 app.get("/gl_success", (req, res) => {
+    let code = decodeURIComponent(req.url.toString().split("code=")[1].split("&scope")[0]);
+    //gl.get_email(code);
+
     res.render("index", {
         google_user: google_user,
         spotify_user: spotify_user,
@@ -41,12 +44,9 @@ app.get("/gl_success", (req, res) => {
         sp_pl: sp_pl,
         yt_songs: yt_songs,
         sp_songs: sp_songs
-     });
+    });
 
     res.status(200);
-    console.log(req.url.toString().split("code=")[1].split("&scope")[0]);
-    // console.log(gl.getGoogleAccountFromCode("code=" + req.url.toString().split("code=")[1].split("&scope")[0]));
-    console.log(gl.getGoogleAccountFromCode(req.url.toString().split("code=")[1]));
     res.end();
 });
 
