@@ -1,16 +1,15 @@
 const { google } = require("googleapis");
-
-
 const googleConfig = {
   clientId: process.env.google_id,
   clientSecret: process.env.google_secret,
   redirect: "http://127.0.0.1:8080/gl_success",
 };
-
 const defaultScope = [
   'https://www.googleapis.com/auth/userinfo.email',
-  'https://www.googleapis.com/auth/userinfo.profile'
+  'https://www.googleapis.com/auth/userinfo.profile',
+  'https://www.googleapis.com/auth/youtube.readonly'
 ];
+let google_client_email = null;
 
 function createConnection() {
   return new google.auth.OAuth2(
@@ -34,22 +33,21 @@ function urlGoogle() {
   return url;
 }
 
-function access_tokens(code){
+function access_tokens(code) {
   var postDataUrl = 'https://www.googleapis.com/oauth2/v3/token?' +
-  'code=' + code +
-  '&client_id=' + googleConfig.clientId +
-  '&client_secret=' + googleConfig.clientSecret +
-  '&redirect_uri=' + "http://127.0.0.1:8080/gl_success" +
-  '&grant_type=' + "authorization_code"
+    'code=' + code +
+    '&client_id=' + googleConfig.clientId +
+    '&client_secret=' + googleConfig.clientSecret +
+    '&redirect_uri=' + "http://127.0.0.1:8080/gl_success" +
+    '&grant_type=' + "authorization_code"
 
   var options = {
-      uri: postDataUrl,
-      method: 'POST'
+    uri: postDataUrl,
+    method: 'POST'
   };
 
-  return options
+  return options;
 }
 
 module.exports.urlGoogle = urlGoogle;
 module.exports.tokens = access_tokens;
-//module.exports.get_email = get_email;
