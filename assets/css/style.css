@@ -1,0 +1,40 @@
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    scroll-behavior: smooth;
+}
+
+.youtube {
+    position: absolute;
+    display: block;
+    width: 50%;
+    height: 100%;
+    border: 2px solid red;
+    overflow-y: auto;
+}
+
+.youtube .title {
+    text-align: center;
+    padding: 10px;
+}
+
+.youtube form .url {
+    margin: 2% 5%;
+    width: 90%;
+    text-align: center;
+    padding: 5px;
+}
+
+.youtube form .sendYT {
+    width: 90%;
+    margin: 0% 5%;
+}
+
+.spotify {
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    right: 0;
+    border: 2px solid green;
+}
