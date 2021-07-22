@@ -20,6 +20,9 @@
   "dependencies": {
     "axios": "^0.21.1",
     "express": "^4.17.1",
-    "nodemon": "^2.0.7"
+    "nodejs-base64-converter": "^1.0.5",
+    "nodemon": "^2.0.7",
+    "request": "^2.88.2",
+    "spotify-web-api-node": "^5.0.2"
   }
 }
