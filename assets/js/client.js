@@ -17,14 +17,19 @@ $("#sp_log").on("click", () => { //login to spotify
 });
 
 $(document).ready(() => { //load the playlist after being redirected from the sp API
+  youtube_loading_status();
+
   if(localStorage.getItem("lights") === "true"){ lights(true); }
 
   if($(location).attr("href").includes("logged")){
     $("#s1").addClass("hide");
     $("#loading").removeClass("hide");
+    $("#loading_status").removeClass("hide");
     $("#note").text("")
     $("#step").text("Step 2 - 4 > Choose songs");
     $("#songs").empty();
+    let interval_id = setInterval(youtube_loading_status, 500);
+
     let tc = 0;
     $.ajax({
         url: '/load_yt_playlist',
@@ -69,6 +74,8 @@ $(document).ready(() => { //load the playlist after being redirected from the sp
           songs.push(song.title);
         });
         $("#loading").addClass("hide");
+        $("#loading_status").addClass("hide");
+        clearInterval(interval_id);
         $("#s2").removeClass("hide");
       });
   }
@@ -84,9 +91,12 @@ $("#details").on("click", () => { //define the playlist name and description
 $("#merge").on("click", () => { //add the songs to spotify
   $("#s3").addClass("hide");
   $("#loading").removeClass("hide");
+  $("#loading_status").removeClass("hide");
   $("#step").text("Waiting for results");
 
   if(songs.length >= 1){
+    let interval_id = setInterval(spotify_loading_status, 500);
+
     $.ajax({
       url: "/merge_pl",
       type: "POST",
@@ -99,10 +109,13 @@ $("#merge").on("click", () => { //add the songs to spotify
       }
     }).done((response) => {
       $("#loading").addClass("hide");
+      $("#loading_status").addClass("hide");
+      clearInterval(interval_id);
       $("#step").text("Step 4 - 4 > Results");
       $("#s4").removeClass("hide");
       localStorage.clear();
-      alert(String(response.data));
+      $($("#s4").children()[0]).text(response)
+      console.log(response);
     }).fail((xhr, status, error) => {
       alert(String(status) + "\n" + String(error))
     })
@@ -139,4 +152,40 @@ function lights(on){
     $(".rd-light").each(function(){ $(this).addClass("rd-dark").removeClass("rd-light"); });
     $("#d1, #d2").addClass("bg-light").removeClass("bg-dark");
   }
+}
+
+function youtube_loading_status(){
+  $.ajax({
+    url: "/yt_loading_status",
+    type: "GET"
+  })
+  .done((response) => {
+    if(response.code === 0){
+      $($("#loading_status").children()[0]).text(`${response.message}`);
+    }
+    else{
+      $($("#loading_status").children()[0]).text(`Loaded ${response.message} songs`);
+    }    
+  })
+}
+
+function spotify_loading_status(){
+  $.ajax({
+    url: "/sp_loading_status",
+    type: "GET"
+  })
+  .done((response) => {
+    if(response.code === 0){
+      $($("#loading_status").children()[0]).text(`${response.message}`);
+      //console.log(response.code, response.message);
+    }
+    else if(response.code === 1){
+      $($("#loading_status").children()[0]).text(`Searched for ${response.message} songs`);
+      //console.log(response.code, response.message);
+    }
+    else {
+      $($("#loading_status").children()[0]).text(`Added ${response.message} songs to the playlist`);
+      //console.log(response.code, response.message);
+    }
+  })
 }
