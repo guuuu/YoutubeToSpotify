@@ -1,19 +1,26 @@
 let songs = [];
-
-//regex link yt
-//^(https|http):\/\/(?:www\.)?youtube\.com\/playlist\?list=([a-zA-Z0-9_\-]{0})
+let sp_code = "";
 
 $("#sp_log").on("click", () => { //login to spotify
-  localStorage.setItem("url", String($("#yt_url").val()))
+  let re = new RegExp("^(http:\/\/|https:\/\/)(youtube.com|www.youtube.com)\/(playlist\\?list=|watch\\?v=)");
+  let res = re.exec($("#yt_url").val())
+  if(res !== null && res.length > 2){
 
-  $.ajax({
-    url: "/login_sp",
-    type: "GET"
-  })
-  .done((response) => {
-    if(response !== null){ window.location.href = response.url; }
-    else{ alert("enterro") }
-  })
+    localStorage.setItem("url", String($("#yt_url").val()))
+
+    $.ajax({
+      url: "/login_sp",
+      type: "GET"
+    })
+    .done((response) => {
+      console.log(response);
+      if(response.url !== null){ window.location.href = response.url; }
+      else{ show_error(3, "We couldn't log you in to your spotify account, try again in a few minutes...") }
+    })
+  }
+  else{
+    show_error(2, "That doesn't seem like an valid youtube url, if you think that's a mistake please report this to ...");
+  }
 });
 
 $(document).ready(() => { //load the playlist after being redirected from the sp API
@@ -21,7 +28,11 @@ $(document).ready(() => { //load the playlist after being redirected from the sp
 
   if(localStorage.getItem("lights") === "true"){ lights(true); }
 
-  if($(location).attr("href").includes("logged")){
+  if($(location).attr("href").includes("logged") && $(location).attr("href").includes("error")){
+    show_error(2, "The permission to your spotify account was denied, to use this app, please login again and allow the app...");
+    window.history.pushState('', '', '/');
+  }
+  else if($(location).attr("href").includes("logged")){
     $("#s1").addClass("hide");
     $("#loading").removeClass("hide");
     $("#loading_status").removeClass("hide");
@@ -37,46 +48,58 @@ $(document).ready(() => { //load the playlist after being redirected from the sp
         data: {"yt_url": localStorage.getItem("url") }
       })
       .done(response => {
-        let aux = response.data[response.data.length - 1];
-        response.data.pop(response.data.length - 1)
-        response["data"].forEach(song => {
-          if(localStorage.getItem("lights") === "true"){
-            $("#songs").append(`
-              <div class="song">
-                  <div class="thumbnail ln-light">
-                      <div class="check ln-light" id="yt_ch${tc}">
-                          <img src="assets/images/check.png" alt="checkmark" class="img_check">
-                      </div>
-                  </div>
-                  <div class="ln-light s_name">
-                      <input type="text" class="song_name txt-light" value="${song.title}">
-                  </div>
-              </div>
-            `);
-          }
-          else{
-            $("#songs").append(`
-              <div class="song">
-                  <div class="thumbnail ln-dark">
-                      <div class="check ln-dark" id="yt_ch${tc}">
-                          <img src="assets/images/check.png" alt="checkmark" class="img_check">
-                      </div>
-                  </div>
-                  <div class="ln-dark s_name">
-                      <input type="text" class="song_name txt-dark" value="${song.title}">
-                  </div>
-              </div>
-            `);
-          }
-
-          $($(".thumbnail")[tc]).css("background", `url(${song.thumbnail}) no-repeat center`);
-          tc++;
-          songs.push(song.title);
-        });
-        $("#loading").addClass("hide");
-        $("#loading_status").addClass("hide");
-        clearInterval(interval_id);
-        $("#s2").removeClass("hide");
+        if(response.data !== null){
+          sp_code = window.location.href.split("code=")[1].split("&")[0];
+          window.history.pushState('', '', '/');
+          let aux = response.data[response.data.length - 1];
+          response.data.pop(response.data.length - 1)
+          response["data"].forEach(song => {
+            if(localStorage.getItem("lights") === "true"){
+              $("#songs").append(`
+                <div class="song">
+                    <div class="thumbnail ln-light">
+                        <div class="check ln-light" id="yt_ch${tc}">
+                            <img src="assets/images/check.png" alt="checkmark" class="img_check">
+                        </div>
+                    </div>
+                    <div class="ln-light s_name">
+                        <input type="text" class="song_name txt-light" value="${song.title}">
+                    </div>
+                </div>
+              `);
+            }
+            else{
+              $("#songs").append(`
+                <div class="song">
+                    <div class="thumbnail ln-dark">
+                        <div class="check ln-dark" id="yt_ch${tc}">
+                            <img src="assets/images/check.png" alt="checkmark" class="img_check">
+                        </div>
+                    </div>
+                    <div class="ln-dark s_name">
+                        <input type="text" class="song_name txt-dark" value="${song.title}">
+                    </div>
+                </div>
+              `);
+            }
+  
+            $($(".thumbnail")[tc]).css("background", `url(${song.thumbnail}) no-repeat center`);
+            tc++;
+            songs.push(song.title);
+          });
+          $("#loading").addClass("hide");
+          $("#loading_status").addClass("hide");
+          clearInterval(interval_id);
+          $("#s2").removeClass("hide");
+        }
+        else{
+          show_error(3, response.details);
+          $("#loading").addClass("hide");
+          $("#loading_status").addClass("hide");
+          clearInterval(interval_id);
+          $("#s1").removeClass("hide");
+          $("#step").text("Step 1 - 4 > Login to spotify & load a youtube playlist");
+        }
       });
   }
 });
@@ -102,22 +125,48 @@ $("#merge").on("click", () => { //add the songs to spotify
       type: "POST",
       data: {
         titles: JSON.stringify(songs),
-        code: JSON.stringify(window.location.href.split("code=")[1].split("&")[0]),
+        code: JSON.stringify(sp_code),
         public: JSON.stringify($("#pl_check").is(":checked")),
         name: JSON.stringify($("#pl_name").val()),
         desc: JSON.stringify($("#pl_desc").val())
       }
     }).done((response) => {
-      $("#loading").addClass("hide");
-      $("#loading_status").addClass("hide");
-      clearInterval(interval_id);
-      $("#step").text("Step 4 - 4 > Results");
-      $("#s4").removeClass("hide");
-      localStorage.clear();
-      $($("#s4").children()[0]).text(response)
-      console.log(response);
+      if(response.data !== null){
+        let h2 = document.createElement("h2");
+        $(h2).addClass("nf_title");
+        let l = localStorage.getItem("lights") === "true" ? true : false;
+        
+        if(l){ $(h2).addClass("tt-light") }
+        else{ $(h2).addClass("tt-dark") }
+  
+        $("#loading").addClass("hide");
+        $("#loading_status").addClass("hide");
+        clearInterval(interval_id);
+        $("#step").text("Step 4 - 4 > Results");
+        $("#s4").removeClass("hide");
+        localStorage.clear();
+  
+        if(response.not_found > 0){
+          $("#s4").append($(h2).html(`We couldn't find <mark>${response.not_found}</mark> songs in a total of <mark>${response.total}</mark> songs (<mark>${parseInt((response.not_found/response.total)*100)}%</mark>) :`))
+          response.not_found_titles.forEach((title) => {
+            let p = document.createElement("p");
+            if(l){ $(p).addClass("tt-light"); }
+            else{ $(p).addClass("tt-dark"); }
+  
+            p.appendChild(document.createTextNode("\u25E6 " + String(title)))
+            $("#nf_songs").append(p);
+          })
+        }
+        else{
+          $($(h2).removeClass("nf_title")).addClass("nf_title2");
+          $("#s4").append($(h2).text("All songs were found and added to the spotify playlist!"))
+        }
+      }
+      else{
+        show_error(3, response.details);
+      }
     }).fail((xhr, status, error) => {
-      alert(String(status) + "\n" + String(error))
+      show_error(3, "Something went wrong...")
     })
   }
 })
@@ -177,15 +226,44 @@ function spotify_loading_status(){
   .done((response) => {
     if(response.code === 0){
       $($("#loading_status").children()[0]).text(`${response.message}`);
-      //console.log(response.code, response.message);
     }
     else if(response.code === 1){
       $($("#loading_status").children()[0]).text(`Searched for ${response.message} songs`);
-      //console.log(response.code, response.message);
     }
     else {
       $($("#loading_status").children()[0]).text(`Added ${response.message} songs to the playlist`);
-      //console.log(response.code, response.message);
     }
   })
+}
+
+function show_error(code, message){
+  $("#error").text(message);
+
+  if(code === 1){
+    $("#error").removeClass("hide_msg");
+    $("#error").addClass("success");
+
+    setTimeout(() => {
+      $("#error").addClass("hide_msg");
+      $("#error").removeClass("success");
+    }, 4000);
+  }
+  else if(code === 2){
+    $("#error").removeClass("hide_msg");
+    $("#error").addClass("warn");
+
+    setTimeout(() => {
+      $("#error").addClass("hide_msg");
+      $("#error").removeClass("warn");
+    }, 4000);
+  }
+  else if(code === 3){
+    $("#error").removeClass("hide_msg");
+    $("#error").addClass("error");
+
+    setTimeout(() => {
+      $("#error").addClass("hide_msg");
+      $("#error").removeClass("error");
+    }, 4000);
+  }
 }
