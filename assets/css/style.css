@@ -45,6 +45,11 @@ Light mode:
     font-family: 'Russo One', sans-serif;
 }
 
+mark{
+    padding: 0px 15px;
+    border: none !important;
+}
+
 .hide {
     z-index: -1;
     opacity: 0;
@@ -512,6 +517,36 @@ main{
     font-size: x-large;
     font-weight: 100;
 }
+
+.step4 .ac{
+    position: absolute;
+    width: 20%;
+    height: 10%;
+    z-index: 1000;
+    bottom: 0;
+    font-size: x-large
+}
+
+.step4 .ac.bt-light:hover{ 
+    background-color: var(--background_hover); 
+    cursor: pointer;
+    -webkit-transition: 0.2s;
+    -moz-transition: 0.2s;
+    -ms-transition: 0.2s;
+    -o-transition: 0.2s;
+    transition: 0.2s;    
+}
+
+.step4 .ac.bt-dark:hover{ 
+    background-color: var(--dark_background_hover); 
+    color: var(--dark_background);
+    cursor: pointer;
+    -webkit-transition: 0.2s;
+    -moz-transition: 0.2s;
+    -ms-transition: 0.2s;
+    -o-transition: 0.2s;
+    transition: 0.2s;    
+}
 /*end step 4*/
 
 /*error message*/
@@ -543,18 +578,15 @@ main{
 }
 
 .show_message.success{
-    background-color: #00FF00;
-    border: 2px solid #FF0000;
+    background-color: #00DD00;
 }
 
 .show_message.error{
-    background-color: #F9D7DB;
-    border: 2px solid #F5C7CA;
+    background-color: #B00020;
 }
 
 .show_message.warn{
-    background-color: #FEF3CC;
-    border: 2px solid #FFEFBB;
+    background-color: #FFDE03;
 }
 /*end error message*/
 

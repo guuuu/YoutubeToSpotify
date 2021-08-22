@@ -13,13 +13,12 @@ $("#sp_log").on("click", () => { //login to spotify
       type: "GET"
     })
     .done((response) => {
-      console.log(response);
       if(response.url !== null){ window.location.href = response.url; }
       else{ show_error(3, "We couldn't log you in to your spotify account, try again in a few minutes...") }
     })
   }
   else{
-    show_error(2, "That doesn't seem like an valid youtube url, if you think that's a mistake please report this to ...");
+    show_error(2, "That doesn't seem like an valid youtube url, if you think that's a mistake please report this&nbsp;<a href='https://github.com/guuuu/YoutubeToSpotify/issues/new' target='blank'> issue</a>");
   }
 });
 
@@ -58,12 +57,12 @@ $(document).ready(() => { //load the playlist after being redirected from the sp
               $("#songs").append(`
                 <div class="song">
                     <div class="thumbnail ln-light">
-                        <div class="check ln-light" id="yt_ch${tc}">
-                            <img src="assets/images/check.png" alt="checkmark" class="img_check">
+                        <div class="check ln-light hide" id="yt_ch${tc}">
+                            <img src="assets/images/check.png" alt="checkmark" class="img_check hide">
                         </div>
                     </div>
                     <div class="ln-light s_name">
-                        <input type="text" class="song_name txt-light" value="${song.title}">
+                        <input type="text" class="song_name txt-light readonly" value="${song.title}">
                     </div>
                 </div>
               `);
@@ -72,12 +71,12 @@ $(document).ready(() => { //load the playlist after being redirected from the sp
               $("#songs").append(`
                 <div class="song">
                     <div class="thumbnail ln-dark">
-                        <div class="check ln-dark" id="yt_ch${tc}">
-                            <img src="assets/images/check.png" alt="checkmark" class="img_check">
+                        <div class="check ln-dark hide" id="yt_ch${tc}">
+                            <img src="assets/images/check.png" alt="checkmark" class="img_check hide">
                         </div>
                     </div>
                     <div class="ln-dark s_name">
-                        <input type="text" class="song_name txt-dark" value="${song.title}">
+                        <input type="text" class="song_name txt-dark" readonly value="${song.title}">
                     </div>
                 </div>
               `);
@@ -147,7 +146,10 @@ $("#merge").on("click", () => { //add the songs to spotify
         localStorage.clear();
   
         if(response.not_found > 0){
-          $("#s4").append($(h2).html(`We couldn't find <mark>${response.not_found}</mark> songs in a total of <mark>${response.total}</mark> songs (<mark>${parseInt((response.not_found/response.total)*100)}%</mark>) :`))
+          if(l)
+            $("#s4").append($(h2).html(`We couldn't find <mark class='bt-light'>${response.not_found}</mark> songs in a total of <mark class='bt-light'>${response.total}</mark> songs (<mark class='bt-light'>${parseInt((response.not_found/response.total)*100)}%</mark>) :`))
+          else
+            $("#s4").append($(h2).html(`We couldn't find <mark class='bt-dark'>${response.not_found}</mark> songs in a total of <mark class='bt-dark'>${response.total}</mark> songs (<mark class='bt-dark'>${parseInt((response.not_found/response.total)*100)}%</mark>) :`))
           response.not_found_titles.forEach((title) => {
             let p = document.createElement("p");
             if(l){ $(p).addClass("tt-light"); }
@@ -155,18 +157,30 @@ $("#merge").on("click", () => { //add the songs to spotify
   
             p.appendChild(document.createTextNode("\u25E6 " + String(title)))
             $("#nf_songs").append(p);
+            if(response.pl_url !== null)
+              window.open(response.pl_url, "_blank");
           })
         }
         else{
           $($(h2).removeClass("nf_title")).addClass("nf_title2");
           $("#s4").append($(h2).text("All songs were found and added to the spotify playlist!"))
+          if(response.pl_url !== null)
+            window.open(response.pl_url, "_blank");
         }
       }
       else{
         show_error(3, response.details);
+        $("#loading").addClass("hide");
+        $("#loading_status").addClass("hide");
+        clearInterval(interval_id);
+        $("#s3").removeClass("hide");
       }
     }).fail((xhr, status, error) => {
-      show_error(3, "Something went wrong...")
+      show_error(3, "Something went wrong...");
+      $("#loading").addClass("hide");
+      $("#loading_status").addClass("hide");
+      clearInterval(interval_id);
+      $("#s3").removeClass("hide");
     })
   }
 })
@@ -237,7 +251,7 @@ function spotify_loading_status(){
 }
 
 function show_error(code, message){
-  $("#error").text(message);
+  $("#error").html(message);
 
   if(code === 1){
     $("#error").removeClass("hide_msg");
@@ -267,3 +281,7 @@ function show_error(code, message){
     }, 4000);
   }
 }
+
+$("#ac").click(() => {
+  location.reload();
+})

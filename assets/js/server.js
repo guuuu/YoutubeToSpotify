@@ -10,9 +10,10 @@ const app = express();
 const sp_id = "1a724cc7f36547cfaa1c851b26deebe1";
 const sp_sc = "3734f25cfd364cc4a037ffd8d47564ba";
 const scopes = ["playlist-modify-public", "playlist-modify-private"];
+
 const spotify = new SpotifyWebApi({
     clientId: sp_id,
-    redirectUri: "http://192.168.1.117:8080/logged"
+    redirectUri: `http://${process.env.ytsp_redirect}/logged`
 });
 
 const common_words = [
@@ -48,15 +49,6 @@ let sp_searching = false;
 
 let sp_counter_songs = 0;
 let sp_loading = false;
-
-/*
-TODO Controlar melhor os nomes das musicas, retirar oficial audio, oficial video, prod etc, meter respostas corretas em caso de erro
-    aceitar caracteres espciais tp ã õ etc
-
-    Arranjar forma de q este grupo de caracteres (?:\u00C0-\u00FF)
-    nao seja removido
-    
-*/
 
 app.use(express.static(__dirname + "\\..\\.."));
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -175,7 +167,7 @@ app.post("/load_yt_playlist", (req, res) => {
 app.post("/merge_pl", (req, res) => {
     try {
         let songs = JSON.parse(req.body.titles);
-
+        songs = songs.reverse();
         let sp_found_songs = [];
         let not_found_songs = [];
 
@@ -193,25 +185,35 @@ app.post("/merge_pl", (req, res) => {
             "Authorization": null
         }
 
+        if(String(JSON.parse(req.body.name)).trim() === ""){
+            res.status(200).send({
+                data: null,
+                details: "Playlist name can't be empty"
+            });
+            return;
+        }        
+
         let data = { //playlist properties
             "name": JSON.parse(req.body.name),
             "description": JSON.parse(req.body.desc),
             "public": JSON.parse(req.body.public)
         }
 
+        let pl_url = null;
 
         for(let i = 0; i < songs.length; i++)
             if(songs[i] === "")
                 songs.splice(i, 1);
 
-        axios.post(`https://accounts.spotify.com/api/token?grant_type=authorization_code&code=${JSON.parse(req.body.code)}&redirect_uri=http://192.168.1.117:8080/logged`, null, {headers: headers_token}) //Change auth token for access token
-        //axios.post(`https://accounts.spotify.com/api/token?grant_type=authorization_code&code=${JSON.parse(req.body.code)}&redirect_uri=http://${process.env.ytsp_redirect}/logged`, null, {headers: headers_token}) //Change auth token for access token
+        //axios.post(`https://accounts.spotify.com/api/token?grant_type=authorization_code&code=${JSON.parse(req.body.code)}&redirect_uri=http://192.168.1.117:8080/logged`, null, {headers: headers_token}) //Change auth token for access token
+        axios.post(`https://accounts.spotify.com/api/token?grant_type=authorization_code&code=${JSON.parse(req.body.code)}&redirect_uri=http://${process.env.ytsp_redirect}/logged`, null, {headers: headers_token}) //Change auth token for access token
         .then((response_token) => {
             headers.Authorization = `${response_token.data.token_type} ${response_token.data.access_token}`; //set auth header to the access token
             axios.get("https://api.spotify.com/v1/me", {headers: headers}) //Get the logged in account ID so the playlist can be created to it
             .then((response_info) => {
                 axios.post(`https://api.spotify.com/v1/users/${response_info.data.id}/playlists`, data , { headers: headers }) //Create the playlist with the specified details
                 .then((response_pl) => {
+                    pl_url = response_pl.data.external_urls.spotify;
                     sp_searching = true;
                     sp_loading = false;
                     let search_song = (song_name) => { 
@@ -248,6 +250,7 @@ app.post("/merge_pl", (req, res) => {
                                                 sp_loading = false;
                                                 res.status(200).send({
                                                     data: 1,
+                                                    pl_url: pl_url,
                                                     found: String(sp_counter_songs),
                                                     not_found: String(not_found_songs.length),
                                                     total: not_found_songs.length + sp_counter_songs,
