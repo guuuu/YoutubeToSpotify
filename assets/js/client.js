@@ -285,3 +285,8 @@ function show_error(code, message){
 $("#ac").click(() => {
   location.reload();
 })
+
+/*
+TODO
+add report bug button in top left cornor
+*/

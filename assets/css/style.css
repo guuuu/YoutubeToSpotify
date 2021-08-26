@@ -50,6 +50,26 @@ mark{
     border: none !important;
 }
 
+/* width */
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
 .hide {
     z-index: -1;
     opacity: 0;
@@ -113,6 +133,11 @@ header .step{
     align-items: flex-start;
     text-align: center;
     flex-direction: column;
+    -webkit-transition: 0.3s;
+    -moz-transition: 0.3s;
+    -ms-transition: 0.3s;
+    -o-transition: 0.3s;
+    transition: 0.3s;
 }
 
 header .step .sub_title{ font-weight: 100; }
@@ -267,6 +292,11 @@ main{
     flex-direction: column;
     align-items: center;
     overflow-y: auto;
+    -webkit-transition: 0.3s;
+    -moz-transition: 0.3s;
+    -ms-transition: 0.3s;
+    -o-transition: 0.3s;
+    transition: 0.3s;
 }
 
 .step2 .songs .song{
@@ -285,6 +315,11 @@ main{
     background-size: cover;
     display: flex;
     justify-content: flex-end;
+    -webkit-transition: 0.3s;
+    -moz-transition: 0.3s;
+    -ms-transition: 0.3s;
+    -o-transition: 0.3s;
+    transition: 0.3s;
 }
 
 .step2 .check{
@@ -350,6 +385,11 @@ main{
     height: 100%;
     width: 25%;
     font-size: large;
+    -webkit-transition: 0.3s;
+    -moz-transition: 0.3s;
+    -ms-transition: 0.3s;
+    -o-transition: 0.3s;
+    transition: 0.3s;
 }
 
 .step2 .bottom .bt-dark.merge:hover{
@@ -392,6 +432,11 @@ main{
     /* border: 2px solid white; */
     width: 55%;
     height: 100%;
+    -webkit-transition: 0.3s;
+    -moz-transition: 0.3s;
+    -ms-transition: 0.3s;
+    -o-transition: 0.3s;
+    transition: 0.3s;
 }
 
 .step3 .content .top, .step3 .content .mid{
@@ -510,6 +555,11 @@ main{
     overflow-y: auto;
     text-align: left;
     left: 30%;
+    -webkit-transition: 0.2s;
+    -moz-transition: 0.2s;
+    -ms-transition: 0.2s;
+    -o-transition: 0.2s;
+    transition: 0.2s;   
 }
 
 .step4 #nf_songs p{
@@ -669,3 +719,117 @@ main{
     }
 }
 /*end loading animation*/
+
+/*media queries*/
+header, main {
+    min-width: 320px;
+}
+
+@media only screen and (max-width: 1100px) {
+    .step2 .songs{
+        width: 100%;
+    }
+
+    .step2 .songs .song .s_name{
+        width: 65%;
+    }
+}
+
+@media only screen and (max-width: 560px) {
+    header .step{
+        padding: 5px;
+        text-align: center;
+        -webkit-transition: 0.3s;
+        -moz-transition: 0.3s;
+        -ms-transition: 0.3s;
+        -o-transition: 0.3s;
+        transition: 0.3s;
+    }
+
+    .step1 .yt_url{
+        width: 98%;
+    }
+
+    .step1 .load_pl{
+        width: 70%;
+    }
+
+    .step2 .songs{
+        width: 100%;
+    }
+
+    .step2 .bottom{
+        width: 100%;
+    }
+
+    .step2 .songs .song{
+        margin-bottom: 45px;
+    }
+
+    .step2 .songs .song .thumbnail{
+        width: 100%;
+        -webkit-transition: 0.3s;
+        -moz-transition: 0.3s;
+        -ms-transition: 0.3s;
+        -o-transition: 0.3s;
+        transition: 0.3s;
+    }
+
+    .step2 .songs .song .s_name{
+        width: 100%;
+        margin-left: 0%;
+        height: unset;
+    }
+
+    .step2 .songs .song .s_name .song_name{
+        font-size: large;
+    }
+
+    .step2 .bottom .merge{
+        width: 50%;
+    }
+
+    .step3 .content h3{
+        padding-left: 5px;
+    }
+
+    .step3 .content{
+        width: 100%;
+    }
+
+    .step3 .content .mid{
+        margin-top: unset;
+        height: 40%;
+    }
+
+    .step3 .content .bot{
+        margin-top: 20px;
+    }
+
+    .step3 .content .bot .sp_merge{
+        width: 70%;
+        font-size: large;
+    }
+
+    .step4 .ac{
+        width: 70%;
+    }
+
+    .step4 #nf_songs{
+        left: 5%;
+        width: 95%;
+        height: 60%;
+        font-size: large;
+    }
+
+    .step4 .nf_title{
+        top: 0px;
+        left: 0px;
+    }
+
+    .show_message{
+        height: 90px;
+        font-size: large;
+    }
+}
+/*end media queries*/
