@@ -60,6 +60,7 @@ app.get("/login_sp", (req, res) => {
         let authorizeURL = spotify.createAuthorizeURL(scopes, state, true);
         res.status(200).send({url: authorizeURL});
     } catch (error) {
+        console.error(error)
         res.status(200).send({url: null});
     }
 });
@@ -143,6 +144,7 @@ app.post("/load_yt_playlist", (req, res) => {
                 } 
             })
             .catch(error => { //if anything goes wrong, it's catched here and controlled so the user knows what's going on (currently only handling error 404)
+                console.error(error);
                 if(error.response.status === 404){
                     res.status(200).send({
                         data: null,
@@ -160,6 +162,7 @@ app.post("/load_yt_playlist", (req, res) => {
 
         yt_request(playlist_id, ""); //Start the recursion
     } catch (error) { //Something really bad happened
+        console.error(error);
         res.status(200).send({data: null, details: "Something went wrong..."});
     }
 });
@@ -260,18 +263,19 @@ app.post("/merge_pl", (req, res) => {
                                         }
 
                                     })
-                                    .catch((error_inserted) => { })
+                                    .catch((error_inserted) => { console.error(error_inserted); })
                                 }
 
                                 add_song();
                             }
                         })
-                        .catch((error_songs) => { })
+                        .catch((error_songs) => { console.error(error_songs); })
                     }
 
                     search_song(songs[songs.length - 1]) //Start recursion
                 })
                 .catch((error_pl) => {
+                    console.error(error_pl);
                     res.status(200).send({
                         data: null,
                         details: "Couldn't create the spotify playlist"
@@ -279,6 +283,7 @@ app.post("/merge_pl", (req, res) => {
                 });
             })
             .catch((err_info) => {
+                console.error(err_info);
                 res.status(200).send({
                     data: null,
                     details: "Couldn't get your spotify profile details (user ID), try logging in again..."
@@ -286,12 +291,14 @@ app.post("/merge_pl", (req, res) => {
             })
         })
         .catch((error_token) => {
+            console.error(error_token);
             res.status(200).send({
                 data: null,
                 details: "Something went wrong, your spotify session might have timed out, try logging in again..."
             });
         })
     } catch (error) {
+            console.error(error);
             res.status(200).send({
                 data: null,
                 details: "Something went wrong..."
