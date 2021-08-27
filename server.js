@@ -13,7 +13,7 @@ const scopes = ["playlist-modify-public", "playlist-modify-private"];
 
 const spotify = new SpotifyWebApi({
     clientId: sp_id,
-    redirectUri: `http://${process.env.ytsp_redirect}/logged`
+    redirectUri: `https://${process.env.ytsp_redirect}/logged`
 });
 
 const common_words = [
