@@ -208,7 +208,7 @@ app.post("/merge_pl", (req, res) => {
             if(songs[i] === "")
                 songs.splice(i, 1);
 
-        axios.post(`https://accounts.spotify.com/api/token?grant_type=authorization_code&code=${JSON.parse(req.body.code)}&redirect_uri=http://${process.env.ytsp_redirect}/logged`, null, {headers: headers_token}) //Change auth token for access token
+        axios.post(`https://accounts.spotify.com/api/token?grant_type=authorization_code&code=${JSON.parse(req.body.code)}&redirect_uri=https://${process.env.ytsp_redirect}/logged`, null, {headers: headers_token}) //Change auth token for access token
         .then((response_token) => {
             headers.Authorization = `${response_token.data.token_type} ${response_token.data.access_token}`; //set auth header to the access token
             axios.get("https://api.spotify.com/v1/me", {headers: headers}) //Get the logged in account ID so the playlist can be created to it
