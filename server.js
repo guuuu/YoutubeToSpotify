@@ -7,8 +7,8 @@ const axios = require('axios');
 const path = require("path");
 const app = express();
 
-const sp_id = "1a724cc7f36547cfaa1c851b26deebe1";
-const sp_sc = "3734f25cfd364cc4a037ffd8d47564ba";
+const sp_id = String(process.env.sp_id);
+const sp_sc = String(process.env.sp_sc);
 const scopes = ["playlist-modify-public", "playlist-modify-private"];
 
 const spotify = new SpotifyWebApi({
@@ -50,7 +50,7 @@ let sp_searching = false;
 let sp_counter_songs = 0;
 let sp_loading = false;
 
-app.use(express.static(__dirname + "\\..\\.."));
+app.use(express.static(path.resolve("public")));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -77,7 +77,7 @@ app.get("/sp_loading_status", (req, res) => {
 });
 
 app.get("*", (req, res) => {
-    res.status(200).sendFile(path.join(__dirname, path.join("..", path.join("..", "index.html"))));
+    res.status(200).sendFile(path.resolve("index.html"));
 });
 
 app.post("/load_yt_playlist", (req, res) => {
@@ -205,7 +205,6 @@ app.post("/merge_pl", (req, res) => {
             if(songs[i] === "")
                 songs.splice(i, 1);
 
-        //axios.post(`https://accounts.spotify.com/api/token?grant_type=authorization_code&code=${JSON.parse(req.body.code)}&redirect_uri=http://192.168.1.117:8080/logged`, null, {headers: headers_token}) //Change auth token for access token
         axios.post(`https://accounts.spotify.com/api/token?grant_type=authorization_code&code=${JSON.parse(req.body.code)}&redirect_uri=http://${process.env.ytsp_redirect}/logged`, null, {headers: headers_token}) //Change auth token for access token
         .then((response_token) => {
             headers.Authorization = `${response_token.data.token_type} ${response_token.data.access_token}`; //set auth header to the access token
